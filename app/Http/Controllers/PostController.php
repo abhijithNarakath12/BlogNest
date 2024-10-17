@@ -30,8 +30,15 @@ class PostController extends Controller implements HasMiddleware
         $page = $request->query('page' , 1);
         
         $posts =  Post::where('published',true)->paginate( $perPage , $columns = ['title','content'], $pageName="page");
-
-        return ['status'=>true,'data' =>['post' => $posts]];
+        // dd($posts->items());
+        
+        return ['status'=>true,'data' =>[
+            'posts' => $posts->items(),
+            'total' =>$posts->total(),
+            'per_page' => $posts->perPage(),
+            'current_page' => $posts->currentPage(),
+            'last_page' => $posts->lastPage(),
+        ]];
     }
 
     /**
