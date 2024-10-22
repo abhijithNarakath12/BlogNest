@@ -39,7 +39,8 @@ class AuthController extends Controller
 
         }else{
             $data = json_decode($response->getContent(), true);
-            dd($statusCode.$data);
+            
+            dd($statusCode);
         }
         // dd($data["data"]["token"]);
 
