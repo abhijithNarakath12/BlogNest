@@ -19,21 +19,21 @@
                   <div class="ml-10 flex items-baseline space-x-4">
                     <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                     <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Posts</a>
-                    @auth
-                      <a href="{{url('/my-posts')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">My Posts</a>
-                    @endauth
+                    @if (!!$isAuth)
+                      <a href="/my-posts" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">My Posts</a>
+                    @endif
                   </div>
                 </div>
               </div>
-              
-              <div> <a href="{{ url('/posts') }}" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">SIGN IN</a></div>
+              <div> <a href="/login" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">SIGN IN</a></div>
+              {{-- <div> <a href="{{ route("login") }}" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">SIGN IN</a></div> --}}
             </div>
           </div>
         </nav>
       
         <header class="bg-white shadow">
           <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Posts</h1>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{$header}}</h1>
           </div>
         </header>
         <main>

@@ -11,9 +11,12 @@ class Layout extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public $isAuth;
+    public $header;
+    public function __construct($isAuth = false,$header)
     {
-        //
+        $this->isAuth = $isAuth;
+        $this->header = $header;
     }
 
     /**

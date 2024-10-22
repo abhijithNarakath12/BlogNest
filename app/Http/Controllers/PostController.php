@@ -8,6 +8,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 
 
@@ -28,6 +29,8 @@ class PostController extends Controller implements HasMiddleware
     {
         $perPage = $request->query('perPage' , 10);
         $page = $request->query('page' , 1);
+        Log::info('*************************'.url('/api/posts'));
+
         
         $posts =  Post::where('published',true)->paginate( $perPage , $columns = ['title','content'], $pageName="page");
         // dd($posts->items());
