@@ -40,7 +40,6 @@ class AuthController extends Controller
         }else{
             $data = json_decode($response->getContent(), true);
             
-            dd($statusCode);
         }
         // dd($data["data"]["token"]);
 
@@ -69,7 +68,6 @@ class AuthController extends Controller
 
         $response = app()->handle($api);
         $data = json_decode($response->getContent(), true);
-        dd($data);
 
         if($data["status"]){
             // session(['accessTocken' => $data["data"]['token']]);

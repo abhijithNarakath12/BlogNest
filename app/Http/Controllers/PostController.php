@@ -10,16 +10,36 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 
 class PostController extends Controller implements HasMiddleware
 {
+
+  
 
     public static function middleware()
     {
         return [
             new Middleware('auth:sanctum', except: ['index', 'show'])
         ];
+    }
+
+    public function findOrFail($id): Post|JsonResponse
+    {
+        $post = Post::find($id);
+        
+        if (!$post) {
+            throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Post Not Found',
+            ], 404)
+        );
+        }
+        
+        return $post;
     }
 
     /**
@@ -29,19 +49,19 @@ class PostController extends Controller implements HasMiddleware
     {
         $perPage = $request->query('perPage' , 10);
         $page = $request->query('page' , 1);
-        Log::info('*************************'.url('/api/posts'));
-
         
         $posts =  Post::where('published',true)->paginate( $perPage , $columns = ['title','content'], $pageName="page");
-        // dd($posts->items());
         
-        return ['status'=>true,'data' =>[
-            'posts' => $posts->items(),
-            'total' =>$posts->total(),
-            'per_page' => $posts->perPage(),
-            'current_page' => $posts->currentPage(),
-            'last_page' => $posts->lastPage(),
-        ]];
+        return [
+            'status'=>true,
+            'data' =>[
+                'posts' => $posts->items(),
+                'total' =>$posts->total(),
+                'per_page' => $posts->perPage(),
+                'current_page' => $posts->currentPage(),
+                'last_page' => $posts->lastPage(),
+                ]
+            ];
     }
 
     /**
@@ -58,31 +78,41 @@ class PostController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        return $post;
+        $post = $this->findOrFail($id);
+        return ['status'=>true,'data' => ['post' => $post]];
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, $id)
     {
+        $post = $this->findOrFail($id);
+        Gate::authorize('isAutherized', $post);
+
         $fields = $request->validated();
 
         $post->update($fields);
-        return ['status'=>true,'data' => ['post' => $post]]; 
+        return [
+            'status'=>true,
+            'data' => ['post' => $post]]; 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
+        $post = $this->findOrFail($id);
+
         Gate::authorize('isAutherized', $post);
         $post->delete();
 
-        return ['status'=>true,'data'=>['message' => 'Post Deleted Successfully']];
+        return [
+            'status'=>true,
+            'data'=>['message' => 'Post Deleted Successfully']];
     }
 }

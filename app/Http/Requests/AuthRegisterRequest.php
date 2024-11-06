@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\CustomRequest;
 
-class UpdateCommentRequest extends CustomRequest
+class AuthRegisterRequest extends CustomRequest
 {
 
     /**
@@ -15,7 +15,9 @@ class UpdateCommentRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|max:255',
+            'email' => 'required|max:255|unique:users',
+            'password' => 'required|confirmed'
         ];
     }
 }
