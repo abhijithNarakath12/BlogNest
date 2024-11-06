@@ -70,7 +70,7 @@ class CommentController extends Controller
             throw new HttpResponseException(
             response()->json([
                 'status' => false,
-                'message' => 'Post Not Found',
+                'message' => 'Comment Not Found',
             ], 404)
         );
         }
