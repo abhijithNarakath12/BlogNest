@@ -4,33 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Post extends Model
+class Comment extends Model
 {
+    /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
-    protected $fillable =[
-        'title',
-        'content',
-        'published'
-    ];
 
-    protected $casts = [
-        'published' => 'boolean',
+    protected $fillable =[
+        'content',
+        'user_id',
     ];
 
     public function user() {
         return $this->belongsTo(User::class);
     }
 
-    protected function title() : Attribute {
-        return Attribute::make(
-            set: fn (string $value) => ucwords(strtolower($value)),
-        );
+    public function post() {
+        return $this->belongsTo(Post::class);
     }
-    
-    public function comments() {
+
+    public function commentable() {
+        return $this->morphTo();
+    }
+
+    public function replies() {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+
 }

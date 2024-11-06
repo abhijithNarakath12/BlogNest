@@ -3,18 +3,19 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\CustomRequest;
 use Illuminate\Support\Facades\Gate;
 
 
-class UpdatePostRequest extends FormRequest
+class UpdatePostRequest extends CustomRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $post = $this->route('post');
-        Gate::authorize('isAutherized', $post);
+        // $post = $this->route('post');
+        // Gate::authorize('isAutherized', $post);
         return true;
     }
 
@@ -30,4 +31,6 @@ class UpdatePostRequest extends FormRequest
             'content' => 'required',
         ];
     }
+
+   
 }

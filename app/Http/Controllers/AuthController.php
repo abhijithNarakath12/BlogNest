@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthRegisterRequest;
+use App\Http\Requests\AuthLoginRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,13 +12,9 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     
-    public function register(Request $request) {
-        $fields = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|max:255|unique:users',
-            'password' => 'required|confirmed'
-        ]);
+    public function register(AuthRegisterRequest $request) {
 
+        $fields = $request->validated();
         $user = User::create($fields);
 
         $token = $user->createToken($request->name);
@@ -30,15 +28,10 @@ class AuthController extends Controller
             ]; 
     }
 
-    public function login(Request $request) {
-        $request->validate([
-            'email' => 'required|max:255|exists:users',
-            'password' => 'required'
-        ]);
-
+    public function login(AuthLoginRequest $request) {
         $user = User::where("email", $request->email)->first();
 
-        if (!$user && !Hash::check($request->password, $user->password)) {
+        if ($user && !Hash::check($request->password, $user->password)) {
             return [
                 'status'=>false,
                 'errors' => [
@@ -46,7 +39,6 @@ class AuthController extends Controller
                 ]
             ];
         }
-        // dd($user);
 
         $token = $user->createToken($user->name);
 
@@ -68,6 +60,20 @@ class AuthController extends Controller
             'status'=>true,
             'data' => [
                'message' => "Logout Successfull"
+            ]
+        ];
+    }
+
+    public function refreshToken(Request $request) {
+        
+        $request->user()->tokens()->delete();
+        $token = $request->user()->createToken($request->user()->name);
+
+        return [
+            'status'=>true,
+            'data' => [
+               'message' => "Refresh Token Successfull",
+               'token' => $token->plainTextToken,
             ]
         ];
     }

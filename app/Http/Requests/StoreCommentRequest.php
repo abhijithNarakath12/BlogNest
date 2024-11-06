@@ -5,8 +5,7 @@ namespace App\Http\Requests;
 // use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\CustomRequest;
 
-
-class StorePostRequest extends CustomRequest
+class StoreCommentRequest extends CustomRequest
 {
 
     /**
@@ -17,9 +16,7 @@ class StorePostRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255',
-            'content' => 'required',
+            'content' => 'required|string',
         ];
     }
-
 }
